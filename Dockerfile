@@ -1,5 +1,3 @@
-ARG OPENCPI_VERSION=v2.2.1
-
 FROM centos:7 AS base
 
 #install common packages
@@ -28,9 +26,7 @@ ENV LANG=en_US.utf8
 ##### INSTALL OPENCPI - THIS WILL BE OUR NEW BASE AS OPENCPI INSTALL A BUNCH OF OTHER TOOLS
 FROM base as opencpi
 
-ARG OPENCPI_VERSION
-
-RUN git clone -b ${OPENCPI_VERSION} https://gitlab.com/opencpi/opencpi.git
+RUN git clone -b v2.2.1 https://gitlab.com/opencpi/opencpi.git
 RUN /opencpi/projects/core/rcc/platforms/centos7/centos7-packages.sh
 
 WORKDIR /opencpi
