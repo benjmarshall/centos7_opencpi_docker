@@ -23,7 +23,7 @@ RUN yum update -y \
 RUN echo "LANG=en_US.utf8" >> /etc/locale.conf
 ENV LANG=en_US.utf8
 
-##### INSTALL OPENCPI - THIS WILL BE OUR NEW BASE AS OPENCPI INSTALL A BUNCH OF OTHER TOOLS
+# install opencpi
 FROM base as opencpi
 
 RUN git clone -b v2.2.1 https://gitlab.com/opencpi/opencpi.git
@@ -33,6 +33,9 @@ WORKDIR /opencpi
 RUN ./scripts/install-opencpi.sh --minimal
 RUN source cdk/opencpi-setup.sh -s
  
+# cleanup
+RUN yum clean all \
+&& rm -rf /var/cache/yum
 
 ENTRYPOINT [""]
 
