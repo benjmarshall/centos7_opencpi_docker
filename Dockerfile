@@ -31,15 +31,13 @@ FROM base as opencpi
 ARG OPENCPI_VERSION
 
 RUN git clone -b "${OPENCPI_VERSION}" https://gitlab.com/opencpi/opencpi.git
-RUN /opencpi/projects/core/rcc/platforms/centos7/centos7-packages.sh
+RUN /opencpi/projects/core/rcc/platforms/centos7/centos7-packages.sh \
+&& yum clean all \
+&& rm -rf /var/cache/yum
 
 WORKDIR /opencpi
 RUN ./scripts/install-opencpi.sh --minimal
 RUN source cdk/opencpi-setup.sh -s
- 
-# cleanup
-RUN yum clean all \
-&& rm -rf /var/cache/yum
 
 ENTRYPOINT [""]
 
