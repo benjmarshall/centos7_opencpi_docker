@@ -9,6 +9,12 @@ on:
   push:
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'OpenCPI version tag'
+        required: true
+        type: string
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -35,6 +41,14 @@ jobs:
         with:
         # Optionally strip `v` prefix
           strip_v: false
+
+      - name: Determine version
+        uses: haya14busa/action-cond@v1
+        id: determineVersion
+        with:
+          cond: ${{ github_event == 'push' }}
+          if_true: ${{ steps.tag.outputs.tag }}
+          if_false: ${{ inputs.version }}
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -83,7 +97,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-              OPENCPI_VERSION=${{ steps.tag.outputs.tag }} 
+              OPENCPI_VERSION=${{ steps.determineVersion.outputs.value }} 
 
 
       # Sign the resulting Docker image digest except on PRs.
