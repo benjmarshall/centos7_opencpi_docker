@@ -30,7 +30,7 @@ ENV LANG=en_US.utf8
 # install opencpi
 FROM base as opencpi
 
-RUN git clone -b $OPENCPI_VERSION https://gitlab.com/opencpi/opencpi.git
+RUN git clone -b "${OPENCPI_VERSION}" https://gitlab.com/opencpi/opencpi.git
 RUN /opencpi/projects/core/rcc/platforms/centos7/centos7-packages.sh
 
 WORKDIR /opencpi
