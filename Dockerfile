@@ -4,6 +4,8 @@ FROM centos:7 AS base
 
 ARG OPENCPI_VERSION
 
+RUN echo "${OPENCPI_VERSION}"
+
 #install common packages
 
 RUN yum update -y \
