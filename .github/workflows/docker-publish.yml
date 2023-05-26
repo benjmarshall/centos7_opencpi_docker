@@ -46,7 +46,7 @@ jobs:
         uses: haya14busa/action-cond@v1
         id: determineVersion
         with:
-          cond: ${{ github_event == 'push' }}
+          cond: ${{ github.event_name == 'push' }}
           if_true: ${{ steps.tag.outputs.tag }}
           if_false: ${{ inputs.version }}
 
