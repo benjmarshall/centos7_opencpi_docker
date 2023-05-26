@@ -29,6 +29,13 @@ jobs:
       id-token: write
 
     steps:
+      - name: Get tag
+        id: tag
+        uses: dawidd6/action-get-tag@v1
+        with:
+        # Optionally strip `v` prefix
+          strip_v: false
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -75,6 +82,7 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+	  build-args: OPENCPI_VERSION=${{steps.tag.outputs.tag}} 
 
 
       # Sign the resulting Docker image digest except on PRs.

@@ -1,5 +1,7 @@
 FROM centos:7 AS base
 
+ARG OPENCPI_VERSION=v2.4.6
+
 #install common packages
 
 RUN yum update -y \
@@ -26,7 +28,7 @@ ENV LANG=en_US.utf8
 # install opencpi
 FROM base as opencpi
 
-RUN git clone -b v2.2.1 https://gitlab.com/opencpi/opencpi.git
+RUN git clone -b ${{OPENCPI_VERSION}} https://gitlab.com/opencpi/opencpi.git
 RUN /opencpi/projects/core/rcc/platforms/centos7/centos7-packages.sh
 
 WORKDIR /opencpi
