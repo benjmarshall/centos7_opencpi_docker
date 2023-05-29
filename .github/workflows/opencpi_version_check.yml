@@ -1,0 +1,109 @@
+# This workflow checks for updates to OpenCPI.
+
+name: OpenCPI Update Check
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  check:
+    
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      status: ${{ steps.semver_compare.outputs.is_greater_b }}
+      version: ${{ steps.opencpi_version.outputs.current }}
+      prerel: ${{ steps.prerel.outputs.prerel}}
+
+    steps:
+
+      - name: Local Version
+        id: local_version
+        uses: lhstrh/action-repo-semver@v1.1.2
+        with:
+          repo: ${{ github.repository }}
+
+      - name: Checkout OpenCPI
+        run: git clone https://gitlab.com/opencpi/opencpi.git
+
+      - name: OpenCPI Version
+        id: opencpi_version
+        uses: lhstrh/action-repo-semver@v1.1.2
+        with:
+          path: opencpi
+      
+      - name: Check prerelease
+        id: prerel
+        if: contains( 'beta', ${{ steps.opencpi_version.outputs.current }})
+        run: echo "prerel=true" >> "$GITHUB_OUTPUT"
+        
+      - name: "Semver Compare"
+        id: semver_compare
+        uses: YunaBraska/semver-info-action@main
+        with:
+          semver-a: ${{ steps.local_version.outputs.current }}
+          semver-b: ${{ steps.opencpi_version.outputs.current }}
+
+  pr:
+    needs: check
+    if: needs.check.outputs.status == 'true'
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+
+      - name: "Test"
+        run: |
+          echo "${{ needs.check.outputs.prerel }}"
+          echo "${{ needs.check.outputs.version }}"
+
+      - name: "Create Branch"
+        uses: peterjgrainger/action-create-branch@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: 'refs/heads/release/${{ needs.check.outputs.version }}'
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: 'refs/heads/release/${{ needs.check.outputs.version }}'
+
+      - name: Modify version number
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: 'ARG OPENCPI_VERSION=(v[0-9\.]*.*)'
+          replacement: 'ARG OPENCPI_VERSION=v${{ needs.check.outputs.version }}'
+          flags: "g"                  # Optional, defaults to "g"
+          include: '.*'       # Optional, defaults to ".*"
+          exclude: '.^'               # Optional, defaults to '.^'
+          encoding: 'utf8'            # Optional, defaults to 'utf8'
+          path: '.'                   # Optional, defaults to '.'
+
+      - name: Commit file
+        uses: swinton/commit@v2.x
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            Dockerfile
+          commit-message: Committing updated Dockerfile
+          ref: 'refs/heads/release/${{ needs.check.outputs.version }}'
+
+      - name: "Create Pull Request"
+        uses: repo-sync/pull-request@v2
+        if: needs.check.outputs.prerel != 'true'
+        with:
+          destination_branch: "master"
+          source_branch: "refs/heads/release/${{ needs.check.outputs.version }}"
+          pr_title: "Update to OpenCPI release ${{ needs.check.outputs.version }}"
+          pr_body: |
+            Update to latest OpenCPI release.
+  
+            _Created by [repo-sync/pull-request](https://github.com/repo-sync/pull-request)_
+  
