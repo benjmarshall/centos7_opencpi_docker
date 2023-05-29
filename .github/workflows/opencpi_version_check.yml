@@ -70,7 +70,7 @@ jobs:
           branch: 'refs/heads/release/${{ needs.check.outputs.version }}'
 
       - name: Modify version number
-        uses: mingjun97/file-regex-replace
+        uses: mingjun97/file-regex-replace@v1
         with:
           regex: '"version": "OPENCPI_VERSION=([0-9\.]*)",'
           replacement: '"version": "${{ needs.check.outputs.version }}",'
