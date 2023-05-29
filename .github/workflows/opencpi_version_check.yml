@@ -25,7 +25,6 @@ jobs:
         with:
           repo: ${{ github.repository }}
 
-      
       - name: Checkout OpenCPI
         run: git clone https://gitlab.com/opencpi/opencpi.git
 
@@ -70,13 +69,18 @@ jobs:
         with:
           branch: 'refs/heads/release/${{ needs.check.outputs.version }}'
 
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: 'refs/heads/release/${{ needs.check.outputs.version }}'
+
       - name: Modify version number
         uses: mingjun97/file-regex-replace@v1
         with:
-          regex: 'OPENCPI_VERSION=(v[0-9\.]*)'
-          replacement: 'OPENCPI_VERSION=${{ needs.check.outputs.version }}'
+          regex: 'ARG OPENCPI_VERSION=(v[0-9\.]*)'
+          replacement: 'ARG OPENCPI_VERSION=v${{ needs.check.outputs.version }}'
           flags: "g"                  # Optional, defaults to "g"
-          include: 'Dockerfile'       # Optional, defaults to ".*"
+          include: '.*'       # Optional, defaults to ".*"
           exclude: '.^'               # Optional, defaults to '.^'
           encoding: 'utf8'            # Optional, defaults to 'utf8'
           path: '.'                   # Optional, defaults to '.'
