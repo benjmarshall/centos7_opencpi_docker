@@ -1,6 +1,6 @@
-# This workflow builds a docker image and pushes it to the Github Container Registry when a new release tag is created, e.g. (v1.1.1)
+# This workflow builds a docker image and pushes it to the Github Container Registry. It can be run manually to build for older releases of OpenCPI
 
-name: Docker Publish
+name: Docker Publish Manual
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -8,9 +8,12 @@ name: Docker Publish
 # documentation.
 
 on:
-  push:
-    # Publish semver tags as releases.
-    tags: [ 'v*.*.*' ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'OpenCPI version tag'
+        required: true
+        type: string
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -31,13 +34,6 @@ jobs:
       id-token: write
 
     steps:
-      - name: Get tag
-        id: tag
-        uses: dawidd6/action-get-tag@v1
-        if: ${{ github.event_name == 'push' }}
-        with:
-        # Optionally strip `v` prefix
-          strip_v: false
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -81,12 +77,12 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ inputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-              OPENCPI_VERSION=${{ steps.tag.outputs.tag }}
+              OPENCPI_VERSION=${{ steps.determineVersion.outputs.value }} 
 
 
       # Sign the resulting Docker image digest except on PRs.
