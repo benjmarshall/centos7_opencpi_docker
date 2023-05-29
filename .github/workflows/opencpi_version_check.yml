@@ -1,0 +1,54 @@
+# This workflow checks for updates to OpenCPI.
+
+name: OpenCPI Update Check
+
+on:
+  workflow_dispatch:
+
+env:
+
+jobs:
+  build:
+    
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+
+      - name: Local Version
+        id: local_version
+        uses: lhstrh/action-repo-semver@v1.1.2
+
+      - name: OpenCPI Version
+        id: opencpi_version
+        uses: lhstrh/action-repo-semver@v1.1.2
+        with:
+          path: https://gitlab.com/opencpi/opencpi.git
+      
+      - name: "Semver Compare"
+        id: semver_compare
+        uses: YunaBraska/semver-info-action@main
+        with:
+          semver-a: ${{ steps.local_version.outputs.current }}
+          semver-b: ${{ steps.local_version.outputs.current }}
+
+      # PRINT
+      - name: "Print Semver Info"
+        run: |
+          echo "Local                [${{ steps.local_verison.outputs }}]"
+          echo "OpenCPI              [${{ steps.opencpi_version.outputs }}]"
+          echo " "
+          echo "clean_semver         [${{ steps.semver_info.outputs.clean_semver }}]"
+          echo "is_stable            [${{ steps.semver_info.outputs.is_stable }}]"
+          echo "is_valid_semver      [${{ steps.semver_info.outputs.is_valid_semver }}]"
+          echo "is_major_change      [${{ steps.semver_info.outputs.is_major_change }}]"
+          echo "is_a_greater_than_b  [${{ steps.semver_info.outputs.is_greater_a }}]"
+          echo "next_major           [${{ steps.semver_info.outputs.next_major }}]"
+          echo "next_major_a         [${{ steps.semver_info.outputs.next_major_a }}]"
+          echo "next_major_b         [${{ steps.semver_info.outputs.next_major_b }}]"
+          echo "next_minor           [${{ steps.semver_info.outputs.next_minor }}]"
+          echo "next_patch           [${{ steps.semver_info.outputs.next_patch }}]"
+          echo "next_rc              [${{ steps.semver_info.outputs.next_rc }}]"
+
+           
