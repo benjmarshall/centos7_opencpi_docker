@@ -6,9 +6,6 @@ on:
   workflow_dispatch:
   push:
 
-env:
-  prerel: false
-
 jobs:
   check:
     
@@ -48,7 +45,7 @@ jobs:
         uses: YunaBraska/semver-info-action@main
         with:
           semver-a: ${{ steps.local_version.outputs.current }}
-          semver-b: 'v2.5.0'
+          semver-b: ${{ steps.opencpi_version.outputs.current }}
 
   pr:
     needs: check
