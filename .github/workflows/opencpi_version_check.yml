@@ -21,11 +21,15 @@ jobs:
         with:
           repo: ${{ github.repository }}
 
+      
+      - name: Checkout OpenCPI
+        run: git clone https://gitlab.com/opencpi/opencpi.git
+
       - name: OpenCPI Version
         id: opencpi_version
         uses: lhstrh/action-repo-semver@v1.1.2
         with:
-          repo: https://gitlab.com/opencpi/opencpi.git
+          path: opencpi
       
       - name: "Semver Compare"
         id: semver_compare
