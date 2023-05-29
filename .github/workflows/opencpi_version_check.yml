@@ -53,6 +53,10 @@ jobs:
     needs: check
     if: needs.check.outputs.status == true
 
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
     steps:
 
       - name: "Test"
