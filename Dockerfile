@@ -42,3 +42,6 @@ RUN source cdk/opencpi-setup.sh -s
 ENTRYPOINT [""]
 
 CMD ["/bin/bash"]
+
+LABEL org.opencontainers.image.source=https://github.com/benjmarshall/centos7_opencpi_docker
+LABEL org.opencontainers.image.description="A container to run OpenCPI on a centos7 base."
