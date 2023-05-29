@@ -18,12 +18,14 @@ jobs:
       - name: Local Version
         id: local_version
         uses: lhstrh/action-repo-semver@v1.1.2
+        with:
+          repo: ${{ github.repository }}
 
       - name: OpenCPI Version
         id: opencpi_version
         uses: lhstrh/action-repo-semver@v1.1.2
         with:
-          path: https://gitlab.com/opencpi/opencpi.git
+          repo: https://gitlab.com/opencpi/opencpi.git
       
       - name: "Semver Compare"
         id: semver_compare
