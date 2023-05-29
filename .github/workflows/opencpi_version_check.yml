@@ -77,7 +77,7 @@ jobs:
       - name: Modify version number
         uses: mingjun97/file-regex-replace@v1
         with:
-          regex: 'ARG OPENCPI_VERSION=(v[0-9\.]*)'
+          regex: 'ARG OPENCPI_VERSION=(v[0-9\.]*.*)'
           replacement: 'ARG OPENCPI_VERSION=v${{ needs.check.outputs.version }}'
           flags: "g"                  # Optional, defaults to "g"
           include: '.*'       # Optional, defaults to ".*"
