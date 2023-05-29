@@ -37,7 +37,7 @@ jobs:
         uses: lhstrh/action-repo-semver@v1.1.2
         with:
           path: opencpi
-          override: '2.5.0'
+          override: 'v2.5.0'
       
       - name: Check prerelease
         id: prerel
