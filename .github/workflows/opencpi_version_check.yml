@@ -37,7 +37,6 @@ jobs:
         uses: lhstrh/action-repo-semver@v1.1.2
         with:
           path: opencpi
-          override: 'v2.5.0'
       
       - name: Check prerelease
         id: prerel
@@ -49,7 +48,7 @@ jobs:
         uses: YunaBraska/semver-info-action@main
         with:
           semver-a: ${{ steps.local_version.outputs.current }}
-          semver-b: ${{ steps.opencpi_version.outputs.current }}
+          semver-b: 'v2.5.0'
 
   pr:
     needs: check
