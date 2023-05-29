@@ -73,8 +73,8 @@ jobs:
       - name: Modify version number
         uses: mingjun97/file-regex-replace@v1
         with:
-          regex: '"version": "OPENCPI_VERSION=(v[0-9\.]*)",'
-          replacement: '"version": "${{ needs.check.outputs.version }}",'
+          regex: 'OPENCPI_VERSION=(v[0-9\.]*)'
+          replacement: 'OPENCPI_VERSION=${{ needs.check.outputs.version }}'
           flags: "g"                  # Optional, defaults to "g"
           include: 'Dockerfile'       # Optional, defaults to ".*"
           exclude: '.^'               # Optional, defaults to '.^'
@@ -83,7 +83,7 @@ jobs:
 
       - name: "Create Pull Request"
         uses: repo-sync/pull-request@v2
-        if: ${{ needs.check.outputs.prerel }} != 'true'
+        if: ${{ needs.check.outputs.prerel }} != true
         with:
           destination_branch: "main"
           source_branch: "refs/heads/release/${{ needs.check.outputs.version }}"
