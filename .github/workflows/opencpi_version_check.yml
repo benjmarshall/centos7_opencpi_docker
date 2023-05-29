@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: read
     outputs:
-      status: ${{ steps.semver_compare.is_greater_b }}
+      status: ${{ steps.semver_compare.outputs.is_greater_b }}
       version: ${{ steps.opencpi_version.outputs.current }}
 
     steps:
@@ -39,7 +39,7 @@ jobs:
       
       - name: Check prerelease
         id: prerel
-        if: contains( "beta", ${{ steps.opencpi_version.outputs.current }})
+        if: contains( 'beta', ${{ steps.opencpi_version.outputs.current }})
         run: echo "prerel=true" >> "$GITHUB_ENV"
         
       - name: "Semver Compare"
