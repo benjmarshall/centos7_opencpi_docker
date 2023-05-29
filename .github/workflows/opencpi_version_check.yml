@@ -61,4 +61,34 @@ jobs:
         run: |
           echo "${{ needs.check.outputs.prerel }}"
           echo "${{ needs.check.outputs.version }}"
-     
+
+      - name: "Create Branch"
+        uses: peterjgrainger/action-create-branch@v2.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: 'refs/heads/release/${{ needs.check.outputs.version }}'
+
+      - name: Modify version number
+        uses: mingjun97/file-regex-replace
+        with:
+          regex: '"version": "OPENCPI_VERSION=([0-9\.]*)",'
+          replacement: '"version": "${{ needs.check.outputs.version }}",'
+          flags: "g"                  # Optional, defaults to "g"
+          include: 'Dockerfile'       # Optional, defaults to ".*"
+          exclude: '.^'               # Optional, defaults to '.^'
+          encoding: 'utf8'            # Optional, defaults to 'utf8'
+          path: '.'                   # Optional, defaults to '.'
+
+      - name: "Create Pull Request"
+        uses: repo-sync/pull-request@v2
+        if: ${{ needs.check.outputs.prerel }} != 'true'
+        with:
+          destination_branch: "main"
+          source_branch: "refs/heads/release/${{ needs.check.outputs.version }}"
+          pr_title: "Update to OpenCPI release ${{ needs.check.outputs.version }}"
+          pr_body: |
+            Update to latest OpenCPI release.
+  
+            _Created by [repo-sync/pull-request](https://github.com/repo-sync/pull-request)_
+  
