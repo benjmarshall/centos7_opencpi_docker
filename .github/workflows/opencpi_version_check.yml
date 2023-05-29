@@ -73,7 +73,7 @@ jobs:
       - name: Modify version number
         uses: mingjun97/file-regex-replace@v1
         with:
-          regex: '"version": "OPENCPI_VERSION=([0-9\.]*)",'
+          regex: '"version": "OPENCPI_VERSION=(v[0-9\.]*)",'
           replacement: '"version": "${{ needs.check.outputs.version }}",'
           flags: "g"                  # Optional, defaults to "g"
           include: 'Dockerfile'       # Optional, defaults to ".*"
