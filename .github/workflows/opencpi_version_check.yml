@@ -99,7 +99,7 @@ jobs:
         uses: repo-sync/pull-request@v2
         if: ${{ needs.check.outputs.prerel }} != true
         with:
-          destination_branch: "main"
+          destination_branch: "master"
           source_branch: "refs/heads/release/${{ needs.check.outputs.version }}"
           pr_title: "Update to OpenCPI release ${{ needs.check.outputs.version }}"
           pr_body: |
