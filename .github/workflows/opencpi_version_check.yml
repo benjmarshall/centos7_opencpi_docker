@@ -39,7 +39,7 @@ jobs:
       
       - name: Check prerelease
         id: prerel
-        if: contains( beta, {{ steps.opencpi_version.outputs.current }})
+        if: contains( "beta", ${{ steps.opencpi_version.outputs.current }})
         run: echo "prerel=true" >> "$GITHUB_ENV"
         
       - name: "Semver Compare"
