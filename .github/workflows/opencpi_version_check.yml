@@ -57,6 +57,6 @@ jobs:
 
       - name: "Test"
         run: |
-        echo "${{ env.prerel }}"
-        echo "${{ needs.check.outputs.version}}"
+          echo "${{ env.prerel }}"
+          echo "${{ needs.check.outputs.version }}"
      
