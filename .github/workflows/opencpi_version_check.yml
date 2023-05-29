@@ -85,6 +85,16 @@ jobs:
           encoding: 'utf8'            # Optional, defaults to 'utf8'
           path: '.'                   # Optional, defaults to '.'
 
+      - name: Commit file
+        uses: swinton/commit@v2.x
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: |
+            Dockerfile
+          commit-message: Committing updated Dockerfile
+          ref: 'refs/heads/release/${{ needs.check.outputs.version }}'
+
       - name: "Create Pull Request"
         uses: repo-sync/pull-request@v2
         if: ${{ needs.check.outputs.prerel }} != true
