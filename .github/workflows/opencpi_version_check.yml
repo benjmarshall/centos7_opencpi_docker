@@ -18,6 +18,7 @@ jobs:
     outputs:
       status: ${{ steps.semver_compare.outputs.is_greater_b }}
       version: ${{ steps.opencpi_version.outputs.current }}
+      prerel: ${{ steps.prerel.outputs.prerel}}
 
     steps:
 
@@ -40,7 +41,7 @@ jobs:
       - name: Check prerelease
         id: prerel
         if: contains( 'beta', ${{ steps.opencpi_version.outputs.current }})
-        run: echo "prerel=true" >> "$GITHUB_ENV"
+        run: echo "prerel=true" >> "$GITHUB_OUTPUT"
         
       - name: "Semver Compare"
         id: semver_compare
@@ -51,7 +52,7 @@ jobs:
 
   pr:
     needs: check
-    if: needs.check.outputs.status == true
+    if: needs.check.outputs.status == 'true'
 
     runs-on: ubuntu-latest
     permissions:
