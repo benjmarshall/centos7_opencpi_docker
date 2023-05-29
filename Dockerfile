@@ -1,4 +1,4 @@
-ARG OPENCPI_VERSION=v2.5.0-beta.1
+ARG OPENCPI_VERSION=v2.5.0-beta.1-beta.1
 
 FROM centos:7 AS base
 
