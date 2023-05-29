@@ -6,8 +6,6 @@ on:
   workflow_dispatch:
   push:
 
-env:
-
 jobs:
   version_check:
     
